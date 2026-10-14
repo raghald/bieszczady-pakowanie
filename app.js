@@ -6,7 +6,7 @@
   const memory = { _v: null, getItem() { return this._v; }, setItem(k, v) { this._v = v; } };
   const store = storage || memory;
 
-  let data = S.load(store);
+  let data = S.migrate(store, S.load(store));
 
   const $ = (id) => document.getElementById(id);
   const listEl = $("list");
@@ -59,12 +59,55 @@
     if (!S.save(store, data)) $("storage-warn").hidden = false;
   }
 
+  // Synchronizacja z serwerem: wysyłamy kolejkę, potem pobieramy wspólny stan.
+  // Gdy serwera nie ma albo nie ma zasięgu, lista działa lokalnie i próbuje ponownie.
+  const API = "api/state";
+  const POLL_MS = 5000;
+  let syncing = false;
+  let online = null;
+
+  function setSync(state) {
+    if (online === state) return;
+    online = state;
+    $("sync").textContent = state
+      ? "Wspólna lista: zmiany widać na obu telefonach."
+      : "Brak połączenia z serwerem. Odhaczenia zapisują się na tym telefonie i wyślą się później.";
+  }
+
+  async function sync() {
+    if (syncing) return;
+    syncing = true;
+    try {
+      if (data.pending.length) {
+        const sent = data.pending.length;
+        const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ops: data.pending }) });
+        if (!r.ok) throw new Error(r.status);
+        S.ack(data, sent);
+        persist();
+      }
+      const r = await fetch(API, { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      const remote = await r.json();
+      const before = JSON.stringify(data.people);
+      S.applyRemote(data, remote.people);
+      if (JSON.stringify(data.people) !== before) { persist(); applyChecks(); }
+      setSync(true);
+    } catch (e) {
+      setSync(false);
+    } finally {
+      syncing = false;
+    }
+    // Zmiany kliknięte w trakcie wysyłania idą od razu, a nie przy następnym odpytaniu.
+    if (online && data.pending.length) sync();
+  }
+
   listEl.addEventListener("change", (e) => {
     const id = e.target.dataset.id;
     if (!id) return;
     S.toggle(data, id, e.target.checked);
     persist();
     update();
+    sync();
   });
 
   peopleEl.addEventListener("click", (e) => {
@@ -89,10 +132,14 @@
       action();
     });
   }
-  armed($("reset"), "Na pewno?", () => { S.resetActive(data); persist(); $("reset").textContent = "Wyczyść"; applyChecks(); });
+  armed($("reset"), "Na pewno?", () => { S.resetActive(data); persist(); $("reset").textContent = "Wyczyść"; applyChecks(); sync(); });
 
   if (!storage) $("storage-warn").hidden = false;
   renderList();
   renderPeople();
   applyChecks();
+  sync();
+  setInterval(() => { if (!document.hidden) sync(); }, POLL_MS);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) sync(); });
+  window.addEventListener("online", sync);
 })();

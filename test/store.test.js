@@ -42,6 +42,54 @@ assert.deepStrictEqual(d.people.Asieńka, { y: true });
 
 // Uszkodzony zapis nie wywraca strony
 st = mem(); st.setItem(S.KEY, "{zepsute");
-assert.deepStrictEqual(S.load(st), S.empty());
+assert.deepStrictEqual(S.load(st), { ...S.empty(), pending: [] });
+
+// Kliknięcia trafiają do kolejki i przetrwają przeładowanie
+st = mem();
+d = S.load(st);
+S.toggle(d, "czapka", true);
+S.toggle(d, "czapka", false);
+S.toggle(d, "termos", true);
+S.save(st, d);
+d = S.load(st);
+assert.strictEqual(d.pending.length, 3);
+assert.deepStrictEqual(d.people.Fryderyk, { termos: true });
+
+// Stan z serwera zastępuje lokalny, ale niewysłane zmiany zostają na wierzchu
+S.applyRemote(d, { Fryderyk: { kijki: true }, Asieńka: { czapka: true }, Obcy: { x: true } });
+assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true, termos: true }, Asieńka: { czapka: true } });
+
+// Po wysłaniu kolejka się czyści, a kolejne pobranie bierze już sam serwer
+S.ack(d, 3);
+assert.deepStrictEqual(d.pending, []);
+S.applyRemote(d, { Fryderyk: { kijki: true } });
+assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true }, Asieńka: {} });
+
+// Zmiany dodane w trakcie wysyłania nie znikają przy potwierdzeniu
+d = S.empty(); d.pending = [];
+S.toggle(d, "a", true); S.toggle(d, "b", true);
+const sent = d.pending.length;
+S.toggle(d, "c", true);
+S.ack(d, sent);
+assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", id: "c", checked: true }]);
+
+// Czyszczenie listy też idzie do kolejki i nie rusza drugiej osoby
+d = S.empty(); d.pending = [];
+d.people.Fryderyk = { a: true }; d.people.Asieńka = { b: true };
+S.resetActive(d);
+assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: { b: true } });
+assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", reset: true }]);
+
+// Stare odhaczenia z telefonu wysyłają się raz, przy pierwszym uruchomieniu
+st = mem();
+st.setItem(S.KEY, JSON.stringify({ active: "Asieńka", people: { Fryderyk: { a: true }, Asieńka: { b: true } } }));
+d = S.migrate(st, S.load(st));
+assert.deepStrictEqual(d.pending, [
+  { person: "Fryderyk", id: "a", checked: true },
+  { person: "Asieńka", id: "b", checked: true }
+]);
+S.save(st, d);
+d = S.migrate(st, S.load(st));
+assert.strictEqual(d.pending.length, 2, "drugi raz nic nie dochodzi");
 
 console.log("OK");
