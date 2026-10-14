@@ -1,6 +1,6 @@
 /* Material Design 3.
-   Kolory: schemat Tonal Spot z material-color-utilities, kolor bazowy #3f6b55.
-   Zawsze jasny motyw, także gdy telefon ma tryb ciemny.
+   Kolory z material-color-utilities: jasny motyw to schemat Tonal Spot z koloru #3f6b55,
+   ciemny to schemat Monochrome (grafit, bez zieleni).
    Komponenty: large top app bar, assist chips, segmented buttons, linear progress,
    karty z listą i checkboxami, text button. */
 :root {
@@ -32,6 +32,32 @@
 
   --md-ref-typeface: "Roboto Flex", Roboto, system-ui, sans-serif;
   color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-sys-color-primary: #ffffff;
+    --md-sys-color-on-primary: #1b1b1b;
+    --md-sys-color-primary-container: #d4d4d4;
+    --md-sys-color-on-primary-container: #000000;
+    --md-sys-color-secondary: #c6c6c6;
+    --md-sys-color-secondary-container: #474747;
+    --md-sys-color-on-secondary-container: #e2e2e2;
+    /* Schemat Monochrome daje tu jasny szary #919191; ciemniejszy grafit mniej odstaje */
+    --md-sys-color-tertiary-container: #3a3a3a;
+    --md-sys-color-on-tertiary-container: #e2e2e2;
+    --md-sys-color-error: #ffb4ab;
+    --md-sys-color-error-container: #93000a;
+    --md-sys-color-on-error-container: #ffdad6;
+    --md-sys-color-surface: #131313;
+    --md-sys-color-surface-container-low: #1b1b1b;
+    --md-sys-color-surface-container: #1f1f1f;
+    --md-sys-color-surface-container-high: #2a2a2a;
+    --md-sys-color-on-surface: #e2e2e2;
+    --md-sys-color-on-surface-variant: #c6c6c6;
+    --md-sys-color-outline: #919191;
+    --md-sys-color-outline-variant: #474747;
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
