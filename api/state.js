@@ -3,7 +3,7 @@
 // każda osoba ma własny hash, a każde odhaczenie to osobne pole,
 // więc dwie osoby klikające naraz nie nadpisują sobie zmian.
 // "Wspólne" to lista rzeczy wspólnych (apteczka, auto).
-const PEOPLE = ["Fryderyk", "Asieńka", "Wspólne"];
+const PEOPLE = ["Asieńka", "Fryderyk", "Wspólne"];
 const ID = /^[a-z0-9-]{1,40}$/;
 
 const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
