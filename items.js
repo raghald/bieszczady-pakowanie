@@ -76,7 +76,6 @@ window.PACKING_LIST = [
   ]},
   { id: "auto", name: "Do auta", shared: true, items: [
     { id: "prawko", name: "Prawo jazdy i dokumenty auta" },
-    { id: "bak", name: "Pełny bak przed wjazdem w góry", hint: "stacji jest mało" },
-    { id: "torba-buty", name: "Torba na brudne i mokre buty", qty: "1" }
+    { id: "bak", name: "Pełny bak przed wjazdem w góry", hint: "stacji jest mało" }
   ]}
 ];
