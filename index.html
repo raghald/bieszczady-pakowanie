@@ -5,44 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pakowanie w Bieszczady</title>
   <meta name="description" content="Lista rzeczy do odhaczania na 3 noce w Bieszczadach w październiku.">
-  <meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#141a17" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5fbf5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1511" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0&icon_names=air,bed,calendar_month,celebration,check,check_circle,cloud_done,cloud_off,group,info,restart_alt,warning&display=block">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <header class="app-bar">
       <h1>Pakowanie w Bieszczady</h1>
-      <div class="meta"><span><b>3 noce</b> w pensjonacie</span><span>październik</span><span>na połoninach ok. 0–8°C, wiatr</span></div>
+      <div class="meta">
+        <span class="assist"><span class="icon" aria-hidden="true">bed</span>3 noce w pensjonacie</span>
+        <span class="assist"><span class="icon" aria-hidden="true">calendar_month</span>Październik</span>
+        <span class="assist"><span class="icon" aria-hidden="true">air</span>Połoniny ok. 0–8°C, wiatr</span>
+      </div>
     </header>
 
-    <div class="people">
-      <div class="people-label">Czyja lista</div>
-      <div class="chips" id="people"></div>
-    </div>
+    <div class="label-row" id="people-label">Czyja lista</div>
+    <div class="segmented" id="people" role="group" aria-labelledby="people-label"></div>
 
-    <div class="bar">
+    <div class="bar" id="bar">
       <div class="count" id="count">0 / 0 spakowane</div>
-      <button class="ghost" id="reset" type="button">Wyczyść</button>
-      <div class="track"><div class="fill" id="fill"></div></div>
+      <button class="text-btn" id="reset" type="button"><span class="icon" aria-hidden="true">restart_alt</span><span class="label">Wyczyść</span></button>
+      <div class="progress" id="progress" role="progressbar" aria-labelledby="count" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="active" id="fill"></div><div class="track"></div><div class="stop"></div>
+      </div>
     </div>
 
-    <div class="done-msg" id="done-msg" hidden>Wszystko spakowane. Dobrej drogi!</div>
-    <div class="warn" id="storage-warn" hidden>Ta przeglądarka nie pozwala zapisywać danych na telefonie (np. tryb prywatny). Bez zasięgu odhaczenia mogą przepaść.</div>
+    <div class="banner done" id="done-msg" hidden><span class="icon filled" aria-hidden="true">celebration</span><span>Wszystko spakowane. Dobrej drogi!</span></div>
+    <div class="banner warn" id="storage-warn" hidden><span class="icon" aria-hidden="true">warning</span><span>Ta przeglądarka nie pozwala zapisywać danych na telefonie (np. tryb prywatny). Bez zasięgu odhaczenia mogą przepaść.</span></div>
 
     <div id="list"></div>
 
     <div class="note">
-      <p><b>Przed wyjazdem:</b> kup bilety do BdPN online, pobierz mapy offline, zapisz numer GOPR 985 / 601 100 300 i zainstaluj aplikację Ratunek.</p>
-      <p>Słońce zachodzi ok. 17:30, a po zmianie czasu 25.10 już ok. 16:30. Planuj zejście ze szlaku przed zmrokiem.</p>
+      <span class="icon" aria-hidden="true">info</span>
+      <div>
+        <p><b>Przed wyjazdem:</b> kup bilety do BdPN online, pobierz mapy offline, zapisz numer GOPR 985 / 601 100 300 i zainstaluj aplikację Ratunek.</p>
+        <p>Słońce zachodzi ok. 17:30, a po zmianie czasu 25.10 już ok. 16:30. Planuj zejście ze szlaku przed zmrokiem.</p>
+      </div>
     </div>
 
     <footer>
-      <span id="sync">Łączenie z serwerem…</span>
-      Asieńka i Fryderyk mają osobne listy, a przełącza się je u góry. Kategorie w części „Wspólne” są takie same u obu osób. „Wyczyść” czyści tylko listę wybranej osoby.
+      <div class="sync" id="sync-row"><span class="icon" id="sync-icon" aria-hidden="true">cloud_done</span><span id="sync">Łączenie z serwerem…</span></div>
+      <p>Asieńka i Fryderyk mają osobne listy, a przełącza się je u góry. Kategorie w części „Wspólne” są takie same u obu osób. „Wyczyść” czyści tylko listę wybranej osoby.</p>
     </footer>
   </div>
 

@@ -30,5 +30,5 @@ na danym telefonie.
 - `store.js` – kopia lokalna, kolejka niewysłanych zmian, łączenie ze stanem z serwera.
 - `api/state.js` – funkcja na Vercelu: odczyt i zapis wspólnego stanu w Upstash Redis.
 - `app.js` – interfejs.
-- `styles.css` – wygląd, jasny i ciemny motyw.
+- `styles.css` – wygląd w Material Design 3: kolory z `material-color-utilities` (schemat Tonal Spot, kolor bazowy `#3f6b55`), jasny i ciemny motyw, Roboto Flex i Material Symbols.
 - `test/` – testy (`node test/store.test.js && node test/api.test.js`).
