@@ -7,6 +7,9 @@ Lista rzeczy do odhaczania na 3 noce w pensjonacie w Bieszczadach w październik
 Są dwie stałe listy, Fryderyk i Asieńka, przełączane przyciskami u góry. Odhaczenia są wspólne:
 to, co zaznaczy się na jednym telefonie, po kilku sekundach widać na drugim.
 
+Apteczka i rzeczy do auta (kategorie z `shared: true` w `items.js`) mają jedną listę
+„Wspólne”, taką samą u obu osób. „Wyczyść” czyści tylko listę wybranej osoby, bez wspólnej.
+
 - Stan trzyma funkcja `api/state.js` na Vercelu, w bazie Upstash Redis podłączonej do projektu
   (Vercel → Storage). Funkcja czyta zmienne `KV_REST_API_URL` i `KV_REST_API_TOKEN`
   (albo `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`).

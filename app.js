@@ -1,12 +1,13 @@
 (function () {
   const S = window.PackingStore;
   const LIST = window.PACKING_LIST;
+  const SHARED_IDS = LIST.filter((c) => c.shared).flatMap((c) => c.items.map((it) => it.id));
   let storage;
   try { storage = window.localStorage; } catch (e) { storage = null; }
   const memory = { _v: null, getItem() { return this._v; }, setItem(k, v) { this._v = v; } };
   const store = storage || memory;
 
-  let data = S.migrate(store, S.load(store));
+  let data = S.migrate(store, S.load(store), SHARED_IDS);
 
   const $ = (id) => document.getElementById(id);
   const listEl = $("list");
@@ -18,10 +19,10 @@
   function renderList() {
     listEl.innerHTML = LIST.map((cat) => `
       <section data-cat="${cat.id}">
-        <h2>${esc(cat.name)}<span class="cat-count"></span></h2>
+        <h2><span>${esc(cat.name)}${cat.shared ? ' <em class="shared">wspólne</em>' : ""}</span><span class="cat-count"></span></h2>
         <ul>${cat.items.map((it) => `
           <li><label class="item" for="i-${it.id}">
-            <input type="checkbox" id="i-${it.id}" data-id="${it.id}">
+            <input type="checkbox" id="i-${it.id}" data-id="${it.id}" data-owner="${cat.shared ? S.SHARED : ""}">
             <span class="box">${CHECK}</span>
             <span class="txt">${esc(it.name)}${it.hint ? `<small>${esc(it.hint)}</small>` : ""}</span>
             ${it.qty ? `<span class="qty">${esc(it.qty)}</span>` : "<span></span>"}
@@ -36,8 +37,9 @@
   }
 
   function applyChecks() {
-    const mine = data.people[data.active];
-    listEl.querySelectorAll("input[data-id]").forEach((i) => { i.checked = !!mine[i.dataset.id]; });
+    listEl.querySelectorAll("input[data-id]").forEach((i) => {
+      i.checked = !!data.people[i.dataset.owner || data.active][i.dataset.id];
+    });
     update();
   }
 
@@ -104,7 +106,7 @@
   listEl.addEventListener("change", (e) => {
     const id = e.target.dataset.id;
     if (!id) return;
-    S.toggle(data, id, e.target.checked);
+    S.toggle(data, id, e.target.checked, e.target.dataset.owner);
     persist();
     update();
     sync();

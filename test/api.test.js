@@ -21,11 +21,11 @@ function res() {
 
 (async () => {
   // Odczyt obu list
-  reply = [{ result: ["czapka", "1", "kijki", "1"] }, { result: [] }];
+  reply = [{ result: ["czapka", "1", "kijki", "1"] }, { result: [] }, { result: ["nrc", "1"] }];
   let r = res();
   await handler({ method: "GET" }, r);
   assert.strictEqual(r.code, 200);
-  assert.deepStrictEqual(r.body.people, { Fryderyk: { czapka: true, kijki: true }, Asieńka: {} });
+  assert.deepStrictEqual(r.body.people, { Fryderyk: { czapka: true, kijki: true }, Asieńka: {}, Wspólne: { nrc: true } });
   assert.strictEqual(calls[0].url, "https://upstash.test/pipeline");
   assert.strictEqual(calls[0].auth, "Bearer t");
 
