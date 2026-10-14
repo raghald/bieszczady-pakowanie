@@ -1,7 +1,7 @@
 // Lista rzeczy: [kategoria, [[nazwa, ilość, podpowiedź], ...]]
 // Każda pozycja ma stały identyfikator (id), żeby zapisane odhaczenia
 // przetrwały zmianę kolejności albo dopisanie nowych rzeczy.
-// Kategorie z shared: true mają jedną listę dla obu osób.
+// Kategorie albo pojedyncze rzeczy z shared: true mają jedną listę dla obu osób.
 window.PACKING_LIST = [
   { id: "szlak-ubranie", name: "Ubranie na szlak", items: [
     { id: "termo-koszulka", name: "Koszulka termoaktywna z długim rękawem", qty: "2" },
@@ -63,8 +63,8 @@ window.PACKING_LIST = [
     { id: "dowod", name: "Dowód osobisty" },
     { id: "karta", name: "Karta płatnicza" },
     { id: "gotowka", name: "Gotówka", hint: "nie wszędzie przyjmują kartę" },
-    { id: "rezerwacja", name: "Potwierdzenie rezerwacji pensjonatu" },
-    { id: "bilety-bdpn", name: "Bilety do Bieszczadzkiego Parku Narodowego", hint: "kup online" }
+    { id: "rezerwacja", name: "Potwierdzenie rezerwacji pensjonatu", shared: true },
+    { id: "bilety-bdpn", name: "Bilety do Bieszczadzkiego Parku Narodowego", hint: "kup online", shared: true }
   ]},
   { id: "auto", name: "Do auta", shared: true, items: [
     { id: "prawko", name: "Prawo jazdy i dokumenty auta" },

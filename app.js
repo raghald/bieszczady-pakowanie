@@ -1,7 +1,8 @@
 (function () {
   const S = window.PackingStore;
   const LIST = window.PACKING_LIST;
-  const SHARED_IDS = LIST.filter((c) => c.shared).flatMap((c) => c.items.map((it) => it.id));
+  const isShared = (cat, it) => !!(cat.shared || it.shared);
+  const SHARED_IDS = LIST.flatMap((c) => c.items.filter((it) => isShared(c, it)).map((it) => it.id));
   let storage;
   try { storage = window.localStorage; } catch (e) { storage = null; }
   const memory = { _v: null, getItem() { return this._v; }, setItem(k, v) { this._v = v; } };
@@ -22,9 +23,9 @@
         <h2><span>${esc(cat.name)}${cat.shared ? ' <em class="shared">wspólne</em>' : ""}</span><span class="cat-count"></span></h2>
         <ul>${cat.items.map((it) => `
           <li><label class="item" for="i-${it.id}">
-            <input type="checkbox" id="i-${it.id}" data-id="${it.id}" data-owner="${cat.shared ? S.SHARED : ""}">
+            <input type="checkbox" id="i-${it.id}" data-id="${it.id}" data-owner="${isShared(cat, it) ? S.SHARED : ""}">
             <span class="box">${CHECK}</span>
-            <span class="txt">${esc(it.name)}${it.hint ? `<small>${esc(it.hint)}</small>` : ""}</span>
+            <span class="txt">${esc(it.name)}${it.shared && !cat.shared ? ' <em class="shared">wspólne</em>' : ""}${it.hint ? `<small>${esc(it.hint)}</small>` : ""}</span>
             ${it.qty ? `<span class="qty">${esc(it.qty)}</span>` : "<span></span>"}
           </label></li>`).join("")}
         </ul>
