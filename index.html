@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pakowanie w Bieszczady</title>
+  <meta name="description" content="Lista rzeczy do odhaczania na 3 noce w Bieszczadach w październiku.">
+  <meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141a17" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Pakowanie w Bieszczady</h1>
+      <div class="meta"><span><b>3 noce</b> w pensjonacie</span><span>październik</span><span>na połoninach ok. 0–8°C, wiatr</span></div>
+    </header>
+
+    <div class="people">
+      <div class="people-label">Czyja lista</div>
+      <div class="chips" id="people"></div>
+      <form class="add-form" id="add-form" hidden>
+        <input id="person-name" type="text" maxlength="24" placeholder="Imię" autocomplete="off" aria-label="Imię osoby">
+        <button class="btn primary" type="submit">Dodaj</button>
+        <button class="btn" type="button" id="add-cancel">Anuluj</button>
+        <p class="err" id="add-error" hidden>Podaj imię, którego jeszcze nie ma na liście.</p>
+      </form>
+    </div>
+
+    <div class="bar">
+      <div class="count" id="count">0 / 0 spakowane</div>
+      <button class="ghost" id="reset" type="button">Wyczyść</button>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+
+    <div class="done-msg" id="done-msg" hidden>Wszystko spakowane. Dobrej drogi!</div>
+    <div class="warn" id="storage-warn" hidden>Ta przeglądarka nie pozwala zapisywać danych (np. tryb prywatny). Odhaczenia znikną po zamknięciu strony.</div>
+
+    <div id="list"></div>
+
+    <div class="note">
+      <p><b>Przed wyjazdem:</b> kup bilety do BdPN online, pobierz mapy offline, zapisz numer GOPR 985 / 601 100 300 i zainstaluj aplikację Ratunek.</p>
+      <p>Słońce zachodzi ok. 17:30, a po zmianie czasu 25.10 już ok. 16:30. Planuj zejście ze szlaku przed zmrokiem.</p>
+    </div>
+
+    <footer>
+      Odhaczenia zapisują się tylko w tej przeglądarce. Każda osoba na swoim telefonie ma własną listę.
+      <button class="ghost" id="remove-person" type="button" hidden>Usuń</button>
+    </footer>
+  </div>
+
+  <script src="items.js"></script>
+  <script src="store.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
