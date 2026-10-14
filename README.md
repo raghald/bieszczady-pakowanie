@@ -8,7 +8,7 @@ Odhaczenia zapisują się w `localStorage` przeglądarki. Nie ma serwera ani wsp
 
 - każda osoba otwiera stronę na swoim telefonie i ma własną listę,
 - to, co zaznaczy jedna osoba, nie pojawia się u drugiej,
-- na jednym urządzeniu można dodać kilka osób (przycisk „+ Osoba”) i przełączać się między ich listami.
+- są dwie stałe listy, Fryderyk i Asieńka, przełączane przyciskami u góry (także na jednym telefonie).
 
 Zapis znika po wyczyszczeniu danych przeglądarki albo w trybie prywatnym.
 
@@ -26,7 +26,7 @@ python3 -m http.server 8000
 ## Pliki
 
 - `items.js` – lista rzeczy (kategorie, ilości, podpowiedzi). Każda pozycja ma stałe `id`, więc dopisanie nowych rzeczy nie kasuje zapisanych odhaczeń.
-- `store.js` – zapis i odczyt postępu, profile osób.
+- `store.js` – zapis i odczyt postępu, listy osób.
 - `app.js` – interfejs.
 - `styles.css` – wygląd, jasny i ciemny motyw.
 - `test/store.test.js` – testy logiki zapisu (`node test/store.test.js`).

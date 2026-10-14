@@ -31,12 +31,8 @@
   }
 
   function renderPeople() {
-    const names = Object.keys(data.people);
-    peopleEl.innerHTML = names.map((n) => `
-      <button type="button" class="chip${n === data.active ? " active" : ""}" data-person="${esc(n)}" aria-pressed="${n === data.active}">${esc(n)}</button>`).join("") +
-      `<button type="button" class="chip add" id="add-person">+ Osoba</button>`;
-    $("remove-person").hidden = names.length < 2;
-    $("remove-person").textContent = `Usuń „${data.active}”`;
+    peopleEl.innerHTML = S.PEOPLE.map((n) => `
+      <button type="button" class="chip${n === data.active ? " active" : ""}" data-person="${esc(n)}" aria-pressed="${n === data.active}">${esc(n)}</button>`).join("");
   }
 
   function applyChecks() {
@@ -74,24 +70,11 @@
   peopleEl.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
-    if (btn.id === "add-person") { $("add-form").hidden = false; $("person-name").focus(); return; }
-    data.active = btn.dataset.person;
+    S.setActive(data, btn.dataset.person);
     persist(); renderPeople(); applyChecks();
   });
 
-  $("add-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const input = $("person-name");
-    const res = S.addPerson(data, input.value);
-    if (!res.ok) { $("add-error").hidden = false; return; }
-    $("add-error").hidden = true;
-    input.value = "";
-    $("add-form").hidden = true;
-    persist(); renderPeople(); applyChecks();
-  });
-  $("add-cancel").addEventListener("click", () => { $("add-form").hidden = true; $("add-error").hidden = true; });
-
-  // Przyciski wymagające potwierdzenia drugim kliknięciem
+  // Przycisk wymagający potwierdzenia drugim kliknięciem
   function armed(btn, label, action) {
     let t;
     btn.addEventListener("click", () => {
@@ -107,7 +90,6 @@
     });
   }
   armed($("reset"), "Na pewno?", () => { S.resetActive(data); persist(); $("reset").textContent = "Wyczyść"; applyChecks(); });
-  armed($("remove-person"), "Na pewno usunąć?", () => { S.removePerson(data, data.active); persist(); renderPeople(); applyChecks(); });
 
   if (!storage) $("storage-warn").hidden = false;
   renderList();

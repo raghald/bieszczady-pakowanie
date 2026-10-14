@@ -1,21 +1,27 @@
 // Zapis postępu pakowania.
 // Wszystko trzymamy w localStorage tej przeglądarki, więc każda osoba
 // na swoim telefonie ma własną listę i nikt nie widzi cudzych odhaczeń.
-// Na jednym urządzeniu można dodatkowo założyć kilka osób (profile).
+// Osoby są stałe: Fryderyk i Asieńka, każde z osobną listą.
 (function (root) {
   const KEY = "bieszczady-pakowanie:v1";
-  const DEFAULT_PERSON = "Ja";
+  const PEOPLE = ["Fryderyk", "Asieńka"];
 
   function empty() {
-    return { active: DEFAULT_PERSON, people: { [DEFAULT_PERSON]: {} } };
+    const people = {};
+    PEOPLE.forEach((n) => { people[n] = {}; });
+    return { active: PEOPLE[0], people };
   }
 
+  // Zostawiamy tylko stałe osoby; brakujące dostają pustą listę.
   function normalize(data) {
-    if (!data || typeof data !== "object" || !data.people || typeof data.people !== "object") return empty();
-    const names = Object.keys(data.people);
-    if (names.length === 0) return empty();
-    if (!names.includes(data.active)) data.active = names[0];
-    return data;
+    const out = empty();
+    if (!data || typeof data !== "object" || !data.people || typeof data.people !== "object") return out;
+    PEOPLE.forEach((n) => {
+      const p = data.people[n];
+      if (p && typeof p === "object") out.people[n] = p;
+    });
+    if (PEOPLE.includes(data.active)) out.active = data.active;
+    return out;
   }
 
   function load(storage) {
@@ -32,18 +38,8 @@
     return data;
   }
 
-  function addPerson(data, name) {
-    name = String(name || "").trim().slice(0, 24);
-    if (!name || data.people[name]) return { data, ok: false };
-    data.people[name] = {};
-    data.active = name;
-    return { data, ok: true };
-  }
-
-  function removePerson(data, name) {
-    if (!data.people[name] || Object.keys(data.people).length === 1) return data;
-    delete data.people[name];
-    if (data.active === name) data.active = Object.keys(data.people)[0];
+  function setActive(data, name) {
+    if (PEOPLE.includes(name)) data.active = name;
     return data;
   }
 
@@ -52,7 +48,7 @@
     return data;
   }
 
-  const api = { KEY, empty, load, save, toggle, addPerson, removePerson, resetActive };
+  const api = { KEY, PEOPLE, empty, load, save, toggle, setActive, resetActive };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.PackingStore = api;
 })(this);
