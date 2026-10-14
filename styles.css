@@ -1,5 +1,6 @@
 /* Material Design 3.
    Kolory: schemat Tonal Spot z material-color-utilities, kolor bazowy #3f6b55.
+   Zawsze jasny motyw, także gdy telefon ma tryb ciemny.
    Komponenty: large top app bar, assist chips, segmented buttons, linear progress,
    karty z listą i checkboxami, text button. */
 :root {
@@ -31,31 +32,6 @@
 
   --md-ref-typeface: "Roboto Flex", Roboto, system-ui, sans-serif;
   color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --md-sys-color-primary: #8ed5b0;
-    --md-sys-color-on-primary: #003824;
-    --md-sys-color-primary-container: #005236;
-    --md-sys-color-on-primary-container: #aaf2cc;
-    --md-sys-color-secondary: #b4ccbd;
-    --md-sys-color-secondary-container: #364b40;
-    --md-sys-color-on-secondary-container: #d0e8d8;
-    --md-sys-color-tertiary-container: #244c5a;
-    --md-sys-color-on-tertiary-container: #c0e9fb;
-    --md-sys-color-error: #ffb4ab;
-    --md-sys-color-error-container: #93000a;
-    --md-sys-color-on-error-container: #ffdad6;
-    --md-sys-color-surface: #0f1511;
-    --md-sys-color-surface-container-low: #171d19;
-    --md-sys-color-surface-container: #1b211d;
-    --md-sys-color-surface-container-high: #262b28;
-    --md-sys-color-on-surface: #dee4de;
-    --md-sys-color-on-surface-variant: #c0c9c1;
-    --md-sys-color-outline: #8a938c;
-    --md-sys-color-outline-variant: #404943;
-    color-scheme: dark;
-  }
 }
 
 * { box-sizing: border-box; }
