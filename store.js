@@ -1,12 +1,12 @@
 // Zapis postępu pakowania.
-// Osoby są stałe: Fryderyk i Asieńka, każde z osobną listą. Rzeczy wspólne
+// Osoby są stałe: Asieńka i Fryderyk, każde z osobną listą. Rzeczy wspólne
 // (kategorie z shared: true w items.js) mają trzecią listę, SHARED.
 // Wspólny stan trzyma serwer (api/state.js); localStorage to kopia
 // na telefonie, żeby lista działała też bez zasięgu. Zmiany, których
 // nie udało się wysłać, czekają w kolejce (pending) do następnej próby.
 (function (root) {
   const KEY = "bieszczady-pakowanie:v1";
-  const PEOPLE = ["Fryderyk", "Asieńka"];
+  const PEOPLE = ["Asieńka", "Fryderyk"];
   const SHARED = "Wspólne";
   const OWNERS = [...PEOPLE, SHARED];
 

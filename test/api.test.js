@@ -21,7 +21,8 @@ function res() {
 
 (async () => {
   // Odczyt obu list
-  reply = [{ result: ["czapka", "1", "kijki", "1"] }, { result: [] }, { result: ["nrc", "1"] }];
+  // Kolejność wyników jak w PEOPLE: Asieńka, Fryderyk, Wspólne
+  reply = [{ result: [] }, { result: ["czapka", "1", "kijki", "1"] }, { result: ["nrc", "1"] }];
   let r = res();
   await handler({ method: "GET" }, r);
   assert.strictEqual(r.code, 200);

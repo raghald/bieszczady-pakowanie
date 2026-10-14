@@ -6,13 +6,15 @@ function mem() {
   return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = v; } };
 }
 
-// Pusty start: dwie stałe osoby
+// Pusty start: dwie stałe osoby, najpierw Asieńka
 let st = mem();
 let d = S.load(st);
-assert.strictEqual(d.active, "Fryderyk");
-assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: {}, Wspólne: {} });
+assert.strictEqual(d.active, "Asieńka");
+assert.deepStrictEqual(S.PEOPLE, ["Asieńka", "Fryderyk"]);
+assert.deepStrictEqual(d.people, { Asieńka: {}, Fryderyk: {}, Wspólne: {} });
 
 // Zaznaczanie i zapis
+S.setActive(d, "Fryderyk");
 S.toggle(d, "czapka", true);
 S.save(st, d);
 assert.strictEqual(S.load(st).people.Fryderyk.czapka, true);
@@ -26,6 +28,7 @@ assert.deepStrictEqual(S.load(b).people.Fryderyk, {});
 
 // Listy osób są rozdzielone
 d = S.empty();
+S.setActive(d, "Fryderyk");
 S.toggle(d, "termos", true);
 S.setActive(d, "Asieńka");
 assert.strictEqual(d.active, "Asieńka");
@@ -36,8 +39,8 @@ assert.strictEqual(d.active, "Asieńka", "nieznanej osoby nie wybieramy");
 // Stary zapis z innymi osobami: zostają tylko stałe
 st = mem(); st.setItem(S.KEY, JSON.stringify({ active: "Ja", people: { Ja: { x: true }, Asieńka: { y: true } } }));
 d = S.load(st);
-assert.deepStrictEqual(Object.keys(d.people), ["Fryderyk", "Asieńka", "Wspólne"]);
-assert.strictEqual(d.active, "Fryderyk");
+assert.deepStrictEqual(Object.keys(d.people), ["Asieńka", "Fryderyk", "Wspólne"]);
+assert.strictEqual(d.active, "Asieńka");
 assert.deepStrictEqual(d.people.Asieńka, { y: true });
 
 // Uszkodzony zapis nie wywraca strony
@@ -47,6 +50,7 @@ assert.deepStrictEqual(S.load(st), { ...S.empty(), pending: [] });
 // Kliknięcia trafiają do kolejki i przetrwają przeładowanie
 st = mem();
 d = S.load(st);
+S.setActive(d, "Fryderyk");
 S.toggle(d, "czapka", true);
 S.toggle(d, "czapka", false);
 S.toggle(d, "termos", true);
@@ -67,6 +71,7 @@ assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true }, Asieńka: {}, Wsp�
 
 // Zmiany dodane w trakcie wysyłania nie znikają przy potwierdzeniu
 d = S.empty(); d.pending = [];
+S.setActive(d, "Fryderyk");
 S.toggle(d, "a", true); S.toggle(d, "b", true);
 const sent = d.pending.length;
 S.toggle(d, "c", true);
@@ -76,6 +81,7 @@ assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", id: "c", checked: true 
 // Czyszczenie listy też idzie do kolejki i nie rusza drugiej osoby
 d = S.empty(); d.pending = [];
 d.people.Fryderyk = { a: true }; d.people.Asieńka = { b: true }; d.people.Wspólne = { c: true };
+S.setActive(d, "Fryderyk");
 S.resetActive(d);
 assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: { b: true }, Wspólne: { c: true } });
 assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", reset: true }]);
@@ -85,9 +91,9 @@ st = mem();
 st.setItem(S.KEY, JSON.stringify({ active: "Asieńka", people: { Fryderyk: { a: true, nrc: true }, Asieńka: { b: true } } }));
 d = S.migrate(st, S.load(st), ["nrc"]);
 assert.deepStrictEqual(d.pending, [
+  { person: "Asieńka", id: "b", checked: true },
   { person: "Fryderyk", id: "a", checked: true },
-  { person: "Wspólne", id: "nrc", checked: true },
-  { person: "Asieńka", id: "b", checked: true }
+  { person: "Wspólne", id: "nrc", checked: true }
 ]);
 assert.strictEqual(d.people.Wspólne.nrc, true, "rzecz wspólna od razu na wspólnej liście");
 S.save(st, d);
