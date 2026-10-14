@@ -10,7 +10,7 @@ function mem() {
 let st = mem();
 let d = S.load(st);
 assert.strictEqual(d.active, "Fryderyk");
-assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: {} });
+assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: {}, Wspólne: {} });
 
 // Zaznaczanie i zapis
 S.toggle(d, "czapka", true);
@@ -36,7 +36,7 @@ assert.strictEqual(d.active, "Asieńka", "nieznanej osoby nie wybieramy");
 // Stary zapis z innymi osobami: zostają tylko stałe
 st = mem(); st.setItem(S.KEY, JSON.stringify({ active: "Ja", people: { Ja: { x: true }, Asieńka: { y: true } } }));
 d = S.load(st);
-assert.deepStrictEqual(Object.keys(d.people), ["Fryderyk", "Asieńka"]);
+assert.deepStrictEqual(Object.keys(d.people), ["Fryderyk", "Asieńka", "Wspólne"]);
 assert.strictEqual(d.active, "Fryderyk");
 assert.deepStrictEqual(d.people.Asieńka, { y: true });
 
@@ -57,13 +57,13 @@ assert.deepStrictEqual(d.people.Fryderyk, { termos: true });
 
 // Stan z serwera zastępuje lokalny, ale niewysłane zmiany zostają na wierzchu
 S.applyRemote(d, { Fryderyk: { kijki: true }, Asieńka: { czapka: true }, Obcy: { x: true } });
-assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true, termos: true }, Asieńka: { czapka: true } });
+assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true, termos: true }, Asieńka: { czapka: true }, Wspólne: {} });
 
 // Po wysłaniu kolejka się czyści, a kolejne pobranie bierze już sam serwer
 S.ack(d, 3);
 assert.deepStrictEqual(d.pending, []);
 S.applyRemote(d, { Fryderyk: { kijki: true } });
-assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true }, Asieńka: {} });
+assert.deepStrictEqual(d.people, { Fryderyk: { kijki: true }, Asieńka: {}, Wspólne: {} });
 
 // Zmiany dodane w trakcie wysyłania nie znikają przy potwierdzeniu
 d = S.empty(); d.pending = [];
@@ -75,21 +75,33 @@ assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", id: "c", checked: true 
 
 // Czyszczenie listy też idzie do kolejki i nie rusza drugiej osoby
 d = S.empty(); d.pending = [];
-d.people.Fryderyk = { a: true }; d.people.Asieńka = { b: true };
+d.people.Fryderyk = { a: true }; d.people.Asieńka = { b: true }; d.people.Wspólne = { c: true };
 S.resetActive(d);
-assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: { b: true } });
+assert.deepStrictEqual(d.people, { Fryderyk: {}, Asieńka: { b: true }, Wspólne: { c: true } });
 assert.deepStrictEqual(d.pending, [{ person: "Fryderyk", reset: true }]);
 
 // Stare odhaczenia z telefonu wysyłają się raz, przy pierwszym uruchomieniu
 st = mem();
-st.setItem(S.KEY, JSON.stringify({ active: "Asieńka", people: { Fryderyk: { a: true }, Asieńka: { b: true } } }));
-d = S.migrate(st, S.load(st));
+st.setItem(S.KEY, JSON.stringify({ active: "Asieńka", people: { Fryderyk: { a: true, nrc: true }, Asieńka: { b: true } } }));
+d = S.migrate(st, S.load(st), ["nrc"]);
 assert.deepStrictEqual(d.pending, [
   { person: "Fryderyk", id: "a", checked: true },
+  { person: "Wspólne", id: "nrc", checked: true },
   { person: "Asieńka", id: "b", checked: true }
 ]);
+assert.strictEqual(d.people.Wspólne.nrc, true, "rzecz wspólna od razu na wspólnej liście");
 S.save(st, d);
-d = S.migrate(st, S.load(st));
-assert.strictEqual(d.pending.length, 2, "drugi raz nic nie dochodzi");
+d = S.migrate(st, S.load(st), ["nrc"]);
+assert.strictEqual(d.pending.length, 3, "drugi raz nic nie dochodzi");
+
+// Rzeczy wspólne: jedna lista niezależna od wybranej osoby
+d = S.empty(); d.pending = [];
+S.toggle(d, "nrc", true, S.SHARED);
+S.setActive(d, "Asieńka");
+assert.strictEqual(d.people.Wspólne.nrc, true);
+assert.ok(!("nrc" in d.people.Fryderyk) && !("nrc" in d.people.Asieńka));
+assert.deepStrictEqual(d.pending, [{ person: "Wspólne", id: "nrc", checked: true }]);
+S.setActive(d, S.SHARED);
+assert.strictEqual(d.active, "Asieńka", "wspólnej listy nie wybiera się jak osoby");
 
 console.log("OK");

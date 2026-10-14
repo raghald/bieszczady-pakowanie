@@ -1,6 +1,7 @@
 // Lista rzeczy: [kategoria, [[nazwa, ilość, podpowiedź], ...]]
 // Każda pozycja ma stały identyfikator (id), żeby zapisane odhaczenia
 // przetrwały zmianę kolejności albo dopisanie nowych rzeczy.
+// Kategorie z shared: true mają jedną listę dla obu osób.
 window.PACKING_LIST = [
   { id: "szlak-ubranie", name: "Ubranie na szlak", items: [
     { id: "termo-koszulka", name: "Koszulka termoaktywna z długim rękawem", qty: "2" },
@@ -39,19 +40,19 @@ window.PACKING_LIST = [
     { id: "okulary", name: "Okulary przeciwsłoneczne", qty: "1" },
     { id: "krem-filtr", name: "Krem z filtrem", qty: "1" }
   ]},
-  { id: "apteczka", name: "Apteczka", items: [
+  { id: "apteczka", name: "Apteczka", shared: true, items: [
     { id: "plastry", name: "Plastry i plastry na otarcia" },
     { id: "przeciwbolowe", name: "Leki przeciwbólowe" },
     { id: "nrc", name: "Folia NRC", qty: "1" },
-    { id: "bandaz", name: "Bandaż elastyczny", qty: "1" },
-    { id: "stale-leki", name: "Twoje stałe leki" }
+    { id: "bandaz", name: "Bandaż elastyczny", qty: "1" }
   ]},
   { id: "kosmetyczka", name: "Kosmetyczka", items: [
     { id: "zeby", name: "Szczoteczka i pasta do zębów" },
     { id: "dezodorant", name: "Dezodorant" },
     { id: "szampon", name: "Szampon i żel", hint: "sprawdź, czy pensjonat daje" },
     { id: "krem-rece", name: "Krem do rąk i pomadka", hint: "wiatr wysusza skórę" },
-    { id: "recznik", name: "Ręcznik szybkoschnący", qty: "1", hint: "jeśli pensjonat nie zapewnia" }
+    { id: "recznik", name: "Ręcznik szybkoschnący", qty: "1", hint: "jeśli pensjonat nie zapewnia" },
+    { id: "stale-leki", name: "Twoje stałe leki" }
   ]},
   { id: "elektronika", name: "Elektronika", items: [
     { id: "telefon", name: "Telefon i ładowarka" },
@@ -65,7 +66,7 @@ window.PACKING_LIST = [
     { id: "rezerwacja", name: "Potwierdzenie rezerwacji pensjonatu" },
     { id: "bilety-bdpn", name: "Bilety do Bieszczadzkiego Parku Narodowego", hint: "kup online" }
   ]},
-  { id: "auto", name: "Do auta", items: [
+  { id: "auto", name: "Do auta", shared: true, items: [
     { id: "prawko", name: "Prawo jazdy i dokumenty auta" },
     { id: "bak", name: "Pełny bak przed wjazdem w góry", hint: "stacji jest mało" },
     { id: "torba-buty", name: "Torba na brudne i mokre buty", qty: "1" }
